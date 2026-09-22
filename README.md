@@ -17,6 +17,8 @@ Participants are users who take part in events managed through RaceDay. They can
 
 CI/CD
 
+<img width="1920" height="1020" alt="image" src="https://github.com/user-attachments/assets/bea9862b-df57-41b2-8394-6e861e2e6c7e" />
+
 
 Video Demonstration
 
