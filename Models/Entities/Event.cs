@@ -15,8 +15,8 @@
 
         // Navigation 
 
-        public Organiser Organiser { get; set; } = null;
-        public ICollection<Category> Category { get; set; } = new List<Category>();
+        public Organiser Organiser { get; set; } = null!;
+        public ICollection<Category> Categories { get; set; } = new List<Category>();
         public ICollection<Enrolment> Enrolments { get; set; } = new List<Enrolment>();
 
     }

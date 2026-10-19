@@ -9,5 +9,10 @@
         public string Role { get; set; } = string.Empty;
         public string? ProfilePictureUrl { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+        // Navigation 
+
+        public Organiser? Organiser { get; set; }
+        public Participant? Participant { get; set; }
     }
 }
