@@ -2,7 +2,7 @@
 {
     public class Organiser
     {
-        public int OrgniserId { get; set; }
+        public int OrganiserId { get; set; }
         public int UserId { get; set; }
         public string? OrganiisationName { get; set; }
 

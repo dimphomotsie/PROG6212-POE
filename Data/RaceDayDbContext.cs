@@ -21,6 +21,15 @@ namespace RaceDay_API.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            // Explicit configuration of primary keys.
+            modelBuilder.Entity<User>().HasKey(u => u.UserId);
+            modelBuilder.Entity<Organiser>().HasKey(o => o.OrganiserId);
+            modelBuilder.Entity<Participant>().HasKey(p => p.ParticipantId);
+            modelBuilder.Entity<Event>().HasKey(e => e.EventId);
+            modelBuilder.Entity<Category>().HasKey(c => c.CategoryId);
+            modelBuilder.Entity<Enrolment>().HasKey(e => e.EnrolmentId);
+            modelBuilder.Entity<Result>().HasKey(r => r.ResultId);
+
             // User: unique email
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.Email)
