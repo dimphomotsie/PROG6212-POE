@@ -20,6 +20,25 @@ namespace RaceDay_API.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            // User: unique email
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
+
+            // User -> Organiser (1-to-1)
+            modelBuilder.Entity<Organiser>()
+                .HasOne(o => o.User)
+                .WithOne(u => u.Organiser)
+                .HasForeignKey<Organiser>(o => o.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // User -> Participant (1-to-1)
+            modelBuilder.Entity<Participant>()
+                .HasOne(p => p.User)
+                .WithOne(u => u.Participant)
+                .HasForeignKey<Participant>(p => p.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
