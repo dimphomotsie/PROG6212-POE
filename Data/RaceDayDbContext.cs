@@ -26,20 +26,20 @@ namespace RaceDay_API.Data
                 .HasIndex(u => u.Email)
                 .IsUnique();
 
-            // User -> Organiser (1.1)
+            // User -> Organiser (1..1)
             modelBuilder.Entity<Organiser>()
                 .HasOne(o => o.User)
                 .WithOne(u => u.Organiser)
                 .HasForeignKey<Organiser>(o => o.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // User -> Participant (1.1)
+            // User -> Participant (1..1)
             modelBuilder.Entity<Participant>()
                 .HasOne(p => p.User)
                 .WithOne(u => u.Participant)
                 .HasForeignKey<Participant>(p => p.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
-            // Organiser -> Events (1.*)
+            // Organiser -> Events (1..*)
             modelBuilder.Entity<Event>()
                 .HasOne(e => e.Organiser)
                 .WithMany(o => o.Events)
@@ -78,6 +78,13 @@ namespace RaceDay_API.Data
                 .WithMany(c => c.Enrolments)
                 .HasForeignKey(e => e.CategoryId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            // Enrolment -> Result (0..1)
+            modelBuilder.Entity<Result>()
+                .HasOne(r => r.Enrolment)
+                .WithOne(e => e.Result)
+                .HasForeignKey<Result>(r => r.EnrolmentId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
