@@ -4,7 +4,7 @@
     {
         public int OrganiserId { get; set; }
         public int UserId { get; set; }
-        public string? OrganiisationName { get; set; }
+        public string? OrganisationName { get; set; }
 
         // Navigation
         public User User { get; set; } = null;
