@@ -8,6 +8,6 @@
         public string Role { get; set; } = string.Empty; // "Organiser" or "Participant"
         public string? OrganisationName { get; set; } // For Organiser
         public DateTime? DateOfBirth { get; set; } // For Participant
-        public string? ContactNumber { get; set; } // For Participant
+        public string? ContactNumber { get; set; } // For Participant 
     }
 }
