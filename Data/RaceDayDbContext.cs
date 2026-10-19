@@ -52,6 +52,32 @@ namespace RaceDay_API.Data
                 .WithMany(e => e.Categories)
                 .HasForeignKey(c => c.EventId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // Enrolment: unique (ParticipantId, EventId)
+            modelBuilder.Entity<Enrolment>()
+                .HasIndex(e => new { e.ParticipantId, e.EventId })
+                .IsUnique();
+
+            // Enrolment -> Participant
+            modelBuilder.Entity<Enrolment>()
+                .HasOne(e => e.Participant)
+                .WithMany(p => p.Enrolments)
+                .HasForeignKey(e => e.ParticipantId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Enrolment -> Event
+            modelBuilder.Entity<Enrolment>()
+                .HasOne(e => e.Event)
+                .WithMany(ev => ev.Enrolments)
+                .HasForeignKey(e => e.EventId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // Enrolment -> Category
+            modelBuilder.Entity<Enrolment>()
+                .HasOne(e => e.Category)
+                .WithMany(c => c.Enrolments)
+                .HasForeignKey(e => e.CategoryId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }
