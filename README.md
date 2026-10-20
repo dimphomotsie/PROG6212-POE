@@ -94,7 +94,9 @@ Run Tests
 dotnet test
 
 CI/CD
-CI green build
+
+<img width="1920" height="1020" alt="Screenshot 2026-10-20 215646" src="https://github.com/user-attachments/assets/307c3597-6184-4803-aac7-f91fc937d2b7" />
+
 
 Unit Testing
 
