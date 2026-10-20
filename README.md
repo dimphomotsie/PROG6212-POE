@@ -35,3 +35,72 @@ From my API endpoint plan, I will highlight the first two endpoints that anchor 
 SQL Demo
 To prove the database script works, I opened SQL Server Management Studio and connected to my local instance. I first showed that the database either did not exist or would be dropped and recreated by the script, ensuring a clean run every time. I then executed the full script by pressing F5 and waited for it to complete. The script ran with no errors. I scrolled down to show the verification output, where the summary listed Users, Organisers, Participants, Events, Categories, Enrolments, and Results with their record counts — four users comprising two Organisers and two Participants, three events, ten categories across those events, four enrolments, and two results for the completed Pietermaritzburg Half Marathon. I then expanded the Tables folder in Object Explorer to show all seven tables were created. I right-clicked the Users table and selected Top 1000 Rows to display the seeded data, showing the four users with their roles and BCrypt password hashes rather than plain text, which satisfies the password hashing requirement at the database level. I then displayed the Events table, showing the three events — the Durban City Marathon, the Pietermaritzburg Half Marathon, and the Cape Town Cycle Tour — with the correct event types of Run, Run, and Cycle. Finally, I displayed the Enrolments table, showing Sipho and Nomsa linked to their events and chosen categories with statuses of Confirmed and Pending, which proves the many-to-many relationship is working correctly through the junction table. This demonstrated that the script runs cleanly on a fresh instance, creates all tables with full constraints, and seeds realistic South African sample data.
 
+## PROG6212 Part 2 
+
+RaceDay – Event Management System
+
+Overview
+RaceDay is a full-stack web-based event management system for the South African
+road running, walking and cycling community. It allows Event Organisers to
+create and manage events, categories, and results, while Participants can
+browse and enter events and track their performance history.
+
+Roles
+- Organiser – create, edit, and delete events; manage categories;
+  capture participant results; view all enrolments for their events.
+- Participant – browse events; enter an event by selecting a category;
+  view their own enrolments and personal results.
+
+Tech Stack
+- ASP.NET Core Web API (.NET 8)
+- Entity Framework Core (Code-First) with SQL Server
+- Session-based authentication with BCrypt password hashing
+- Swagger / OpenAPI
+- xUnit integration tests + FluentAssertions
+- GitHub Actions CI/CD
+
+Project Structure
+docs/                 Part 1 planning documents (ERD, endpoint plan, SQL script)
+RaceDayAPI/           Part 2 Web API
+RaceDayAPI.Tests/     Integration tests
+.github/workflows/    CI/CD
+
+
+Setup & Run Instructions
+
+Prerequisites
+- .NET 8 SDK
+- SQL Server (LocalDB or full instance)
+- Visual Studio 2022 (or `dotnet` CLI)
+
+Steps
+
+1. Clone the repo:
+   git clone <your-repo-url>
+   cd RaceDay
+  
+2. Update the connection string in `RaceDayAPI/appsettings.json` if needed.
+
+3. Apply the EF Core migration: 
+   cd RaceDayAPI
+   dotnet ef database update
+   
+4. Run the API:
+   dotnet run
+   
+5. Open Web Api at https://localhost:7209/swagger
+
+Run Tests
+dotnet test
+
+CI/CD
+CI green build
+
+Unit Testing
+
+<img width="1920" height="1020" alt="Screenshot 2026-10-20 180706" src="https://github.com/user-attachments/assets/adbef441-3d6d-46c5-bcb1-34bad001ee18" />
+
+
+Video Demonstration
+
+
