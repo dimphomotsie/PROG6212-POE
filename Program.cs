@@ -11,6 +11,8 @@ namespace RaceDay_API
 
            
             builder.Services.AddControllers();
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();
 
 
             builder.Services.AddDbContext<RaceDayDbContext>(options =>
@@ -27,7 +29,13 @@ namespace RaceDay_API
 
             var app = builder.Build();
 
-           
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI();
+            }
+
+
 
             app.UseHttpsRedirection();
 
