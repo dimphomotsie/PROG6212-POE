@@ -70,28 +70,23 @@ Setup & Run Instructions
 
 Prerequisites
 - .NET 8 SDK
-- SQL Server (LocalDB or full instance)
+- SQL Server Management (LocalDB)
 - Visual Studio 2022 (or `dotnet` CLI)
 
 Steps
 
-1. Clone the repo:
-   git clone <your-repo-url>
-   cd RaceDay
-  
-2. Update the connection string in `RaceDayAPI/appsettings.json` if needed.
+1. Clone the repository. Open a terminal and run git clone <your-repo-url>, replacing <your-repo-url> with the actual GitHub URL of your repository. Then move into the project root folder by running cd RaceDay.
 
-3. Apply the EF Core migration: 
-   cd RaceDayAPI
-   dotnet ef database update
-   
-4. Run the API:
-   dotnet run
-   
-5. Open Web Api at https://localhost:7209/swagger
+2. Set the connection string. Open the file RaceDayAPI/appsettings.json in a text editor. Locate the ConnectionStrings section and update the DefaultConnection entry to point at your SQL Server instance. The default uses LocalDB, so if you are using LocalDB no change is required. If you are using SQL Server Express, use Server=localhost\\SQLEXPRESS;Database=RaceDayDB;Trusted_Connection=True;TrustServerCertificate=True;. If you are using SQL Server with a username and password, use Server=localhost;Database=RaceDayDB;User Id=sa;Password=YourPassword;TrustServerCertificate=True;. Save the file after making any changes.
 
-Run Tests
-dotnet test
+3. Create the database. Navigate into the API project folder by running cd RaceDayAPI, then create the database by running dotnet ef database update. This applies the Entity Framework Core migration and creates the RaceDayDB database with all seven tables and their constraints. If the command fails with dotnet ef: command not found, first install the EF Core tools globally by running dotnet tool install --global dotnet-ef, then retry the command.
+
+4. Run the API. Still inside the RaceDayAPI folder, run the API by executing dotnet run. The terminal will display the URLs the API is listening on, such as https://localhost:7209 and http://localhost:5093. Make a note of the HTTPS URL, as you will need it in the next step. To stop the API, press Ctrl+C.
+
+5. Open Swagger. Open your browser and navigate to https://localhost:7209/swagger. If the browser warns about an invalid certificate because it is a self-signed development certificate, click Advanced and then Proceed to localhost. The Swagger UI will show every endpoint grouped by controller, and you can test any endpoint directly by expanding it and clicking Try it out.
+
+6. Run the tests. Open a new terminal, navigate back to the solution root by running cd .., then run the test suite with the command dotnet test. You should see output confirming that all ten integration tests pass, such as Passed! - Failed: 0, Passed: 10, Skipped: 0, Total: 10.
+
 
 CI/CD
 
@@ -105,4 +100,23 @@ Unit Testing
 
 Video Demonstration
 
+https://youtu.be/dmirEh1LSQ0
 
+
+Video Demonstration Text (Due to no audio)
+
+This is my Part 2 submission for PROG6212, the RaceDay RESTful API. In this video I'll explain the structure of my API, show how authentication and role-based access work, walk through the endpoints in Swagger. Let's start with the project structure.
+
+The solution has two projects. RaceDay_API is the Web API, and RaceDay_API.Tests is the test project. Inside the API project, there are six controllers; Auth, Users, Events, Categories, Enrolments, and Results. These map directly to the endpoint plan I submitted in Part 1. The Models/Entities folder contains the seven entities matching my Part 1 ERD; User, Organiser, Participant, Event, Category, Enrolment, and Result. Data/RaceDayDbContext configures all the relationships, unique constraints, and cascade rules. Filters/AuthorizeRoleAttribute is my custom role-based access filter, the core of access control. DTOs define the request and response shapes so entities are never exposed directly. Extensions/SessionExtensions provides helper methods for reading UserId and Role from the session. Now let me show you Swagger.
+
+Swagger lists every endpoint grouped by controller, and each one shows its description, the request body it expects, and the response codes it returns. These descriptions come from XML comments in the code and ProducesResponseType attributes on each action. Let me explain the authentication flow. The register endpoint accepts email, password, full name, and role, either Organiser or Participant. If the role is Organiser, it also creates an Organiser record with an organisation name. If the role is Participant, it creates a Participant record with date of birth and contact number. The password is hashed with BCrypt before storage, never stored in plain text. The login endpoint accepts email and password, verifies the BCrypt hash, and then stores UserId, Role, and Email in the server-side session. From that point, every request carries a session cookie, so the API knows who the caller is and what role they have. The logout endpoint clears the session entirely. These three endpoints satisfy the POE requirement for authentication and session management.
+
+Here's how role-based access is enforced. My custom AuthorizeRole attribute is applied to controllers and actions. On every request, it runs before the action method executes. It reads UserId and Role from the session. If there's no UserId, it returns 401 Unauthorized. If the caller's role isn't in the allowed list for that endpoint, it returns 403 Forbidden. This means access control is centralized. It's a cross-cutting concern handled in one place. The result is that Participants cannot call Organiser endpoints and vice versa. Both roles get 403 if they try.
+
+The Users controller handles the profile endpoints. Both Organisers and Participants can view and update their own profile. GET /api/users/profile returns the logged-in user's details. For Organisers, that includes the organisation name. For Participants, it includes date of birth and contact number. The endpoint reads UserId from the session, so a user can only view their own profile, never another user's. PUT /api/users/profile allows updating those same fields. Only fields relevant to the caller's role are updated. Both endpoints require any logged-in user, and return 200 OK on success or 401 Unauthorized if not logged in.
+
+The Events controller has five endpoints. GET /api/events returns all events, sorted by date, with organiser name, category count, and enrolment count. Available to both roles. GET /api/events/{id} returns a single event with its categories. POST /api/events creates a new event. It's restricted to Organisers only. The event is linked to the logged-in Organiser, the organiser's ID is read from the session, not from the request body, so a malicious caller can't forge ownership. PUT /api/events/{id} and DELETE /api/events/{id} do two layers of checking. The AuthorizeRole filter ensures only Organisers can call them. Then inside the action, it is verified that the Organiser making the request actually owns the event. If Organiser A tries to edit Organiser B's event, they get 403 Forbidden even though they're an Organiser. That's the ownership check, resource-level access on top of role-level access.
+
+Categories are nested under events. POST /api/events/{id}/categories adds a category to a specific event, and the same ownership check applies, only the owning Organiser can add categories. Enrolments are where Participants interact with events. POST /api/events/{id}/enrolments allows a Participant to enrol by selecting a category. The endpoint reads ParticipantId from the session, validates that the category belongs to the event, and prevents duplicate enrolments. Participants get 201 Created on success, or 400 if already enrolled. GET /api/enrolments is interesting, it returns different data based on role. Participants see only their own enrolments. Organisers see all enrolments across their events, with participant names shown. Same endpoint, role-appropriate response. Results complete the flow. POST /api/enrolments/{id}/results lets an Organiser record a finish time and position for a specific enrolment — again with the ownership check. GET /api/participants/results lets a Participant view their personal race history with event name, date, category, finish time, and finishing position. Together, these six resource groups cover every functional requirement in the POE.
+
+To summarise, the RaceDay API implements all planned endpoints from Part 1, uses session-based authentication with BCrypt password hashing, enforces role-based access through a custom filter with ownership checks on top, documents every endpoint in Swagger with clear descriptions and response codes, and passes all unit tests locally and in CI. Thank you for watching.
