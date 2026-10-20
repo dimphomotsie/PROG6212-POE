@@ -8,6 +8,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace RaceDay_API.Controllers
 {
+    
+    // Manages event enrolments. Participants can enrol in events by
+    // selecting a category, and can view their own enrolments.
+    // Organisers can view all enrolments for their own events and
+    // update their status (Pending, Confirmed, Cancelled).
+    
     [ApiController]
     [Route("api")]
     [AuthorizeRole("Organiser", "Participant")]
@@ -17,7 +23,19 @@ namespace RaceDay_API.Controllers
 
         public EnrolmentsController(RaceDayDbContext context) => _context = context;
 
-        
+
+        /// <summary>
+        /// Enrols the logged-in Participant in an event by selecting a
+        /// category. The category must belong to the specified event,
+        /// and a participant cannot enrol twice in the same event.
+        /// </summary>
+        /// <param name="eventId">The event ID.</param>
+        /// <param name="request">The selected category.</param>
+        /// <response code="201">Enrolment created.</response>
+        /// <response code="400">Already enrolled, or category mismatch.</response>
+        /// <response code="401">Not authenticated.</response>
+        /// <response code="403">Not a Participant.</response>
+        /// <response code="404">Event or category not found.</response>
         [HttpPost("events/{eventId:int}/enrolments")]
         [AuthorizeRole("Participant")]
         public async Task<IActionResult> Enrol(int eventId, [FromBody] CreateEnrolmentRequest request)
@@ -67,9 +85,16 @@ namespace RaceDay_API.Controllers
             });
         }
 
-        
-       
-        
+
+
+
+        /// <summary>
+        /// Returns enrolments for the logged-in user. Participants see
+        /// their own enrolments; Organisers see all enrolments for the
+        /// events they own.
+        /// </summary>
+        /// <response code="200">List of enrolments returned.</response>
+        /// <response code="401">Not authenticated.</response>
         [HttpGet("enrolments")]
         public async Task<IActionResult> GetMine()
         {
@@ -124,7 +149,19 @@ namespace RaceDay_API.Controllers
             }
         }
 
-        
+
+
+        /// <summary>
+        /// Updates the status of an enrolment. Only the owning Organiser
+        /// may change it. Valid statuses: Pending, Confirmed, Cancelled.
+        /// </summary>
+        /// <param name="id">The enrolment ID.</param>
+        /// <param name="request">The new status.</param>
+        /// <response code="200">Status updated.</response>
+        /// <response code="400">Invalid status.</response>
+        /// <response code="401">Not authenticated.</response>
+        /// <response code="403">Not the owning Organiser.</response>
+        /// <response code="404">Enrolment not found.</response>
         [HttpPut("enrolments/{id:int}/status")]
         [AuthorizeRole("Organiser")]
         public async Task<IActionResult> UpdateStatus(int id, [FromBody] UpdateEnrolmentStatusRequest request)
@@ -146,3 +183,29 @@ namespace RaceDay_API.Controllers
         }
     }
 }
+
+/*
+1. ASP.NET Core Web API Controllers (ControllerBase, [ApiController], [Route("api")]).
+Author: Microsoft
+Link: <https://learn.microsoft.com/en-us/aspnet/core/web-api/>
+Used in: Defining /api/events/{eventId}/enrolments and /api/enrolments endpoints.
+Date Accessed: 18 October 2026
+
+2. EF Core Include with ThenInclude (Participant -> User).
+Author: Microsoft
+Link: <https://learn.microsoft.com/en-us/ef/core/querying/related-data/eager>
+Used in: Loading the participant's User record so their FullName can appear in the Organiser's enrolment list.
+Date Accessed: 18 October 2026
+
+3. LINQ Query Operators (AnyAsync, FirstOrDefaultAsync, Where, Select, ToListAsync).
+Author: Microsoft
+Link: <https://learn.microsoft.com/en-us/dotnet/csharp/linq/>
+Used in: Preventing duplicate enrolments, validating category-event matching, and shaping role-specific response DTOs.
+Date Accessed: 18 October 2026
+
+5. Session Role Branching.
+Author: Microsoft
+Link: <https://learn.microsoft.com/en-us/aspnet/core/fundamentals/app-state>
+Used in: Returning different data to Participants (own enrolments) vs. Organisers (all enrolments for their events).
+Date Accessed: 18 October 2026
+*/

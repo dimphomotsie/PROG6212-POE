@@ -5,6 +5,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace RaceDay_API.Controllers
 {
+   
+    // Handles viewing and updating the currently authenticated user's
+    // profile. Accessible to both Organisers and Participants. Returns
+    // role-specific fields (OrganisationName for Organisers;
+    // DateOfBirth and ContactNumber for Participants).
+    
 
     [ApiController]
     [Route("api/users")]
@@ -18,6 +24,13 @@ namespace RaceDay_API.Controllers
             _context = context;
         }
 
+
+        /// <summary>
+        /// Returns the logged-in user's profile details.
+        /// </summary>
+        /// <response code="200">Profile returned.</response>
+        /// <response code="401">Not authenticated.</response>
+        /// <response code="404">User not found.</response>
         [HttpGet("profile")]
         public async Task<IActionResult> GetProfile()
         {
@@ -42,6 +55,13 @@ namespace RaceDay_API.Controllers
             });
         }
 
+
+        /// <summary>
+        /// Returns the logged-in user's profile details.
+        /// </summary>
+        /// <response code="200">Profile returned.</response>
+        /// <response code="401">Not authenticated.</response>
+        /// <response code="404">User not found.</response>
         [HttpPut("profile")]
         public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileRequest request)
         {
@@ -79,3 +99,29 @@ namespace RaceDay_API.Controllers
         public string? ContactNumber { get; set; }
     }
 }
+
+/*
+1. ASP.NET Core Web API Controllers (ControllerBase, [ApiController], [Route]).
+Author: Microsoft
+Link: <https://learn.microsoft.com/en-us/aspnet/core/web-api/>
+Used in: Defining the /api/users/profile GET and PUT endpoints.
+Date Accessed: 18 October 2026
+
+2. AuthorizeRole Filter (Custom).
+Author: Self (based on Microsoft ActionFilterAttribute documentation)
+Link: <https://learn.microsoft.com/en-us/aspnet/core/mvc/controllers/filters>
+Used in: Restricting profile endpoints to logged-in Organisers and Participants.
+Date Accessed: 18 October 2026
+
+3. EF Core Include (Eager Loading) — Microsoft.EntityFrameworkCore 10.0.13.
+Author: Microsoft
+Link: <https://learn.microsoft.com/en-us/ef/core/querying/related-data/eager>
+Used in: Loading the Organiser or Participant navigation property alongside the User record.
+Date Accessed: 18 October 2026
+
+4. LINQ Query Operators (FirstOrDefaultAsync, Include).
+Author: Microsoft
+Link: <https://learn.microsoft.com/en-us/dotnet/csharp/linq/>
+Used in: Fetching the profile record and applying updates.
+Date Accessed: 18 October 2026
+*/

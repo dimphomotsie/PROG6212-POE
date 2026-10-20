@@ -97,3 +97,29 @@ namespace RaceDay_API.Data
         }
     }
 }
+
+/*
+1. DeleteBehavior enum (Cascade, NoAction).
+Author: Microsoft
+Link: <https://learn.microsoft.com/en-us/ef/core/saving/cascade-delete>
+Used in: Specifying cascade behavior for dependent entities (e.g., deleting a User removes their Organiser/Participant record).
+Date Accessed: 18 October 2026
+
+2. EF Core DbContext and DbSet<T> (Microsoft.EntityFrameworkCore 10.0.13).
+Author: Microsoft
+Link: <https://learn.microsoft.com/en-us/ef/core/dbcontext-configuration/>
+Used in: Defining RaceDayDbContext and exposing each entity as a DbSet.
+Date Accessed: 18 October 2026
+
+3. IsUnique and HasIndex (Unique Constraints).
+Author: Microsoft
+Link: <https://learn.microsoft.com/en-us/ef/core/modeling/indexes>
+Used in: Enforcing unique Email on User and unique (ParticipantId, EventId) on Enrolment.
+Date Accessed: 18 October 2026
+
+4. OnModelCreating and Fluent API (HasOne, WithOne, WithMany, HasForeignKey, HasIndex, OnDelete).
+Author: Microsoft
+Link: <https://learn.microsoft.com/en-us/ef/core/modeling/relationships>
+Used in: Configuring one-to-one, one-to-many, and many-to-many relationships, unique constraints, and cascade delete rules that match the Part 1 ERD.
+Date Accessed: 18 October 2026
+*/

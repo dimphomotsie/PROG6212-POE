@@ -66,3 +66,23 @@ namespace RaceDay_API.Tests
         }
     }
 }
+
+/*
+1. FluentAssertions (.Should().Be()).
+Author: Fluent Assertions
+Link: <https://fluentassertions.com/introduction>
+Used in: Writing readable assertions on HTTP status codes (201, 200, 400, 401).
+Date Accessed: 18 October 2026
+
+2. HttpStatusCode Enum.
+Author: Microsoft
+Link: <https://learn.microsoft.com/en-us/dotnet/api/system.net.httpstatuscode>
+Used in: Comparing responses against named status codes instead of magic numbers.
+Date Accessed: 18 October 2026
+
+3. xUnit ([Fact], IClassFixture<T>).
+Author: xUnit.net
+Link: <https://xunit.net/>
+Used in: Structuring authentication tests and sharing a single WebApplicationFactory across the test class.
+Date Accessed: 18 October 2026
+*/

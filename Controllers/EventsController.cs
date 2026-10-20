@@ -10,6 +10,11 @@ using Microsoft.EntityFrameworkCore;
 namespace RaceDay_API.Controllers
 {
 
+    
+    // Manages events. All authenticated users can view events.
+    // Only Organisers can create, update, or delete events, and only
+    // the organiser who created the event can modify it.
+    
     [ApiController]
     [Route("api/events")]
     [AuthorizeRole("Organiser", "Participant")]
@@ -19,7 +24,13 @@ namespace RaceDay_API.Controllers
 
         public EventsController(RaceDayDbContext context) => _context = context;
 
-        // Returns all events 
+
+        /// <summary>
+        /// Returns all events, ordered by event date, with organiser name,
+        /// category count, and enrolment count.
+        /// </summary>
+        /// <response code="200">List of events returned.</response>
+        /// <response code="401">Not authenticated.</response>
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -48,7 +59,14 @@ namespace RaceDay_API.Controllers
             return Ok(events);
         }
 
-        // Returns a single event with its categories.
+
+        /// <summary>
+        /// Returns a single event by ID, including its categories.
+        /// </summary>
+        /// <param name="id">The event ID.</param>
+        /// <response code="200">Event returned.</response>
+        /// <response code="401">Not authenticated.</response>
+        /// <response code="404">Event not found.</response>
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -74,7 +92,16 @@ namespace RaceDay_API.Controllers
             });
         }
 
-        // Creates a new event. Organiser only.
+
+        /// <summary>
+        /// Creates a new event owned by the logged-in Organiser.
+        /// </summary>
+        /// <param name="request">Event details: name, description, date,
+        /// location, distance, and type (Run, Walk, or Cycle).</param>
+        /// <response code="201">Event created.</response>
+        /// <response code="400">Validation failed.</response>
+        /// <response code="401">Not authenticated.</response>
+        /// <response code="403">Not an Organiser.</response>
         [HttpPost]
         [AuthorizeRole("Organiser")]
         public async Task<IActionResult> Create([FromBody] CreateEventRequest request)
@@ -102,7 +129,17 @@ namespace RaceDay_API.Controllers
                 new { ev.EventId, ev.Name, ev.EventDate });
         }
 
-        // Updates an event. Only the owning Organiser.
+
+        /// <summary>
+        /// Updates an existing event. Only the owning Organiser may do this.
+        /// </summary>
+        /// <param name="id">The event ID.</param>
+        /// <param name="request">Updated event details.</param>
+        /// <response code="200">Event updated.</response>
+        /// <response code="400">Validation failed.</response>
+        /// <response code="401">Not authenticated.</response>
+        /// <response code="403">Not the owning Organiser.</response>
+        /// <response code="404">Event not found.</response>
         [HttpPut("{id:int}")]
         [AuthorizeRole("Organiser")]
         public async Task<IActionResult> Update(int id, [FromBody] CreateEventRequest request)
@@ -128,7 +165,16 @@ namespace RaceDay_API.Controllers
             return Ok(new { ev.EventId, ev.Name, ev.EventDate });
         }
 
-        // Deletes an event. Only the owning Organiser.
+
+        /// <summary>
+        /// Deletes an event. Only the owning Organiser may do this.
+        /// Cascade delete also removes its categories and enrolments.
+        /// </summary>
+        /// <param name="id">The event ID.</param>
+        /// <response code="204">Event deleted.</response>
+        /// <response code="401">Not authenticated.</response>
+        /// <response code="403">Not the owning Organiser.</response>
+        /// <response code="404">Event not found.</response>
         [HttpDelete("{id:int}")]
         [AuthorizeRole("Organiser")]
         public async Task<IActionResult> Delete(int id)
@@ -148,3 +194,31 @@ namespace RaceDay_API.Controllers
         }
     }
 }
+
+/*
+1. ASP.NET Core Web API Controllers (ControllerBase, [ApiController], [Route]).
+Author: Microsoft
+Link: <https://learn.microsoft.com/en-us/aspnet/core/web-api/>
+Used in: Defining the /api/events CRUD endpoints.
+Date Accessed: 18 October 2026
+
+
+2. CreatedAtAction Helper.
+Author: Microsoft
+Link: <https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.controllerbase.createdataction>
+Used in: Returning 201 Created with a Location header pointing to GET /api/events/{id}.
+Date Accessed: 18 October 2026
+
+3. EF Core Query Operators (Include, ThenInclude, OrderBy, Select, ToListAsync).
+Author: Microsoft
+Link: <https://learn.microsoft.com/en-us/ef/core/querying/>
+Used in: Loading Organiser, Categories, and Enrolments together, sorting by EventDate, and projecting into EventResponse DTOs.
+Date Accessed: 18 October 2026
+
+
+4. [ProducesResponseType] Attribute.
+Author: Microsoft
+Link: <https://learn.microsoft.com/en-us/aspnet/core/fundamentals/openapi/include-metadata>
+Used in: Documenting 200, 201, 400, 401, 403, 404 responses in Swagger.
+Date Accessed: 18 October 2026
+*/

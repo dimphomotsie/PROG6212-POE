@@ -90,3 +90,23 @@ namespace RaceDay_API.Tests
         }
     }
 }
+
+/*
+1. FluentAssertions (.Should().Be()).
+Author: Fluent Assertions
+Link: <https://fluentassertions.com/introduction>
+Used in: Asserting 201 Created on first enrol, 400 Bad Request on duplicate, and 403 Forbidden for Organisers.
+Date Accessed: 18 October 2026
+
+2. ReadFromJsonAsync<Dictionary<string, object>>.
+Author: Microsoft
+Link: <https://learn.microsoft.com/en-us/dotnet/api/system.net.http.json.httpcontentjsonextensions.readfromjsonasync>
+Used in: Extracting eventId and categoryId from setup responses for use in subsequent calls.
+Date Accessed: 18 October 2026
+
+3. xUnit ([Fact], IClassFixture<T>).
+Author: xUnit.net
+Link: <https://xunit.net/>
+Used in: Structuring enrolment tests.
+Date Accessed: 18 October 2026
+*/

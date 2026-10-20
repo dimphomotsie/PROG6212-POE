@@ -64,3 +64,23 @@ namespace RaceDay_API.Tests
         }
     }
 }
+
+/*
+1. FluentAssertions (.Should().Be()).
+Author: Fluent Assertions
+Link: <https://fluentassertions.com/introduction>
+Used in: Asserting that Organisers get 201 Created and Participants get 403 Forbidden on POST /api/events.
+Date Accessed: 18 October 2026
+
+2. WebApplicationFactoryClientOptions (HandleCookies = true).
+Author: Microsoft
+Link: <https://learn.microsoft.com/en-us/aspnet/core/test/integration-tests#handle-cookies>
+Used in: Persisting the session cookie so role-specific tests work.
+Date Accessed: 18 October 2026
+
+3. xUnit ([Fact], IClassFixture<T>).
+Author: xUnit.net
+Link: <https://xunit.net/>
+Used in: Structuring event management tests.
+Date Accessed: 18 October 2026
+*/
