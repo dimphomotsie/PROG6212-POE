@@ -155,7 +155,6 @@ C:\Users\emeris\source\repos\RaceDay_API\RaceDay_API\obj\Debug\net10.0\staticweb
 C:\Users\emeris\source\repos\RaceDay_API\RaceDay_API\obj\Debug\net10.0\staticwebassets.development.json
 C:\Users\emeris\source\repos\RaceDay_API\RaceDay_API\obj\Debug\net10.0\staticwebassets.build.endpoints.json
 C:\Users\emeris\source\repos\RaceDay_API\RaceDay_API\obj\Debug\net10.0\swae.build.ex.cache
-C:\Users\emeris\source\repos\RaceDay_API\RaceDay_API\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt
 C:\Users\emeris\source\repos\RaceDay_API\RaceDay_API\obj\Debug\net10.0\RaceDay_.B065E5D0.Up2Date
 C:\Users\emeris\source\repos\RaceDay_API\RaceDay_API\obj\Debug\net10.0\RaceDay_API.dll
 C:\Users\emeris\source\repos\RaceDay_API\RaceDay_API\obj\Debug\net10.0\refint\RaceDay_API.dll
